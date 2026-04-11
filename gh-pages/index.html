@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Flickr License Timeline — Instrukcja</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e; color: #e0e0e0;
+      min-height: 100vh; padding: 2rem;
+    }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #ff6b6b; margin-bottom: .25rem; }
+    .sub { color: #888; font-size: .9rem; margin-bottom: 2rem; }
+    .card {
+      background: #16213e; border: 1px solid #0f3460;
+      border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .card h2 { font-size: .95rem; color: #a0c4ff; text-transform: uppercase;
+      letter-spacing: .05em; margin-bottom: 1rem; }
+    ol { padding-left: 1.4rem; }
+    ol li { margin-bottom: .6rem; line-height: 1.6; color: #ccc; font-size: .92rem; }
+    ol li strong { color: #ffd93d; }
+    kbd {
+      background: #0f3460; border: 1px solid #1a4a8a; border-radius: 4px;
+      padding: .15rem .45rem; font-size: .8rem; font-family: monospace; color: #a0c4ff;
+    }
+    .copy-wrap { position: relative; margin-top: 1rem; }
+    textarea {
+      width: 100%; height: 140px; background: #0a0a1a; border: 1px solid #1a4a8a;
+      border-radius: 8px; color: #7ec8e3; font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: .78rem; padding: .85rem 1rem; resize: none; outline: none;
+      line-height: 1.5;
+    }
+    button.copy-btn {
+      position: absolute; top: .5rem; right: .5rem;
+      background: #ff6b6b; color: #fff; border: none; border-radius: 6px;
+      padding: .4rem .9rem; font-size: .8rem; font-weight: 600; cursor: pointer;
+      transition: background .2s;
+    }
+    button.copy-btn:hover { background: #ff5252; }
+    button.copy-btn.ok { background: #27ae60; }
+    .note { font-size: .82rem; color: #666; margin-top: .6rem; }
+    .note a { color: #a0c4ff; }
+    .fallback-steps {
+      background: #0f2040; border: 1px solid #1a4a8a; border-radius: 8px;
+      padding: 1rem; margin-top: .75rem; font-size: .82rem; color: #aaa; line-height: 1.7;
+    }
+    .fallback-steps strong { color: #ffd93d; }
+    code { background: #0a0a1a; padding: .1rem .35rem; border-radius: 3px; font-size: .82rem; color: #a0c4ff; }
+
+    /* ── Porównanie profili ── */
+    .cmp-btn {
+      background: #ff6b6b; color: #fff; border: none; border-radius: 8px;
+      padding: .5rem 1.05rem; font-size: .86rem; font-weight: 600; cursor: pointer;
+      transition: background .2s;
+    }
+    .cmp-btn:hover:not(:disabled) { background: #ff5252; }
+    .cmp-btn:disabled { background: #1a3060; color: #444; cursor: default; }
+    .cmp-profile-item {
+      display: flex; align-items: center; gap: .65rem;
+      background: #0f3460; border-radius: 8px; padding: .55rem .85rem;
+      margin-bottom: .35rem; cursor: pointer; transition: background .15s; user-select: none;
+    }
+    .cmp-profile-item:hover { background: #1a3a6a; }
+    .cmp-profile-item input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color: #ff6b6b; flex-shrink: 0; }
+    .cmp-warn {
+      background: rgba(255,193,7,.07); border: 1px solid rgba(255,193,7,.28); border-radius: 8px;
+      padding: .65rem 1rem; margin-bottom: 1rem; font-size: .83rem; color: #ffd93d; line-height: 1.6;
+    }
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .cmp-table th {
+      text-align: left; padding: .4rem .65rem; color: #a0c4ff; font-size: .7rem;
+      text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #1a4a8a; white-space: nowrap;
+    }
+    .cmp-table td { padding: .4rem .65rem; border-bottom: 1px solid rgba(15,52,96,.7); vertical-align: middle; }
+    .cmp-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+  </style>
+</head>
+<body>
+
+<h1>Flickr License Timeline</h1>
+<p class="sub">Licencje zdjęć na kontach Flickr polskich instytucji publicznych</p>
+
+<div class="card" id="cmp-card">
+  <h2>Porównaj profile</h2>
+  <div style="display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem">
+    <span id="cmp-folder-label" style="color:#888;font-size:.83rem">Ładowanie danych…</span>
+  </div>
+  <div id="cmp-tag-bar" style="display:none;margin-bottom:.65rem"></div>
+  <div id="cmp-profile-list" style="display:none;margin-bottom:1rem"></div>
+  <div style="display:flex;gap:.65rem;align-items:center;flex-wrap:wrap">
+    <button class="cmp-btn" id="cmp-go-btn" onclick="cmpCompare()" disabled>Porównaj wybrane</button>
+    <button class="cmp-btn" id="cmp-sel-all-btn" onclick="cmpSelectAll()" style="display:none;background:#1a4a8a">Zaznacz wszystkie</button>
+    <button class="cmp-btn" id="cmp-export-btn" onclick="cmpExportCSV()" style="display:none;background:#1a4a8a">↓ CSV</button>
+  </div>
+  <div id="cmp-results" style="margin-top:1.25rem"></div>
+</div>
+
+<script>
+
+/* ══════════════════════════════════════════════════════════
+   PORÓWNANIE PROFILI
+   ══════════════════════════════════════════════════════════ */
+
+// Pełne nazwy (do tooltipów i tabeli)
+const CMP_LICENSE_NAMES = {
+  '0': 'All Rights Reserved',
+  '1': 'CC BY-NC-SA 2.0',   '2': 'CC BY-NC 2.0',      '3': 'CC BY-NC-ND 2.0',
+  '4': 'CC BY 2.0',         '5': 'CC BY-SA 2.0',       '6': 'CC BY-ND 2.0',
+  '7': 'No Known Copyright', '8': 'US Government Work', '9': 'CC0 1.0',
+  '10':'Public Domain Mark',
+  '11':'CC BY 4.0',         '12':'CC BY-SA 4.0',       '13':'CC BY-ND 4.0',
+  '14':'CC BY-NC 4.0',      '15':'CC BY-NC-SA 4.0',    '16':'CC BY-NC-ND 4.0',
+};
+// Krótkie nazwy (do legendy na wykresach)
+const CMP_LICENSE_SHORT = {
+  '0': 'ARR',
+  '1': 'BY-NC-SA',  '2': 'BY-NC',      '3': 'BY-NC-ND',
+  '4': 'CC BY',     '5': 'CC BY-SA',   '6': 'CC BY-ND',
+  '7': 'No©',       '8': 'US Gov',     '9': 'CC0',
+  '10':'PDM',
+  '11':'CC BY 4.0', '12':'BY-SA 4.0',  '13':'BY-ND 4.0',
+  '14':'BY-NC 4.0', '15':'BY-NC-SA 4', '16':'BY-NC-ND 4',
+};
+// Gradient: zielony (CC0, otwarty) → żółtozielony (CC BY-SA, granica Wikimedia)
+//           → bursztyn (CC BY-ND) → pomarańcz (NC) → czerwień (ARR, restrykcyjny)
+const CMP_LICENSE_COLORS = {
+  // ── Public Domain / efektywnie wolne ──
+  '9': '#2ecc71',   // CC0 1.0              — najjaśniejsza zieleń
+  '10':'#27ae60',   // Public Domain Mark
+  '7': '#1e8449',   // No Known Copyright
+  '8': '#196f3d',   // US Government Work
+  // ── Otwarte CC (kompatybilne z Wikimedia) ──
+  '4': '#239b56',   // CC BY 2.0
+  '11':'#1a7a44',   // CC BY 4.0
+  // ── Granica Wikimedia — ostatnie kompatybilne ──
+  '5': '#82b366',   // CC BY-SA 2.0         — żółtozielony
+  '12':'#6aaa50',   // CC BY-SA 4.0
+  // ── Brak pochodnych — nie Wikimedia ──
+  '6': '#e6b012',   // CC BY-ND 2.0         — bursztyn
+  '13':'#c99a0e',   // CC BY-ND 4.0
+  // ── Niekomercyjne ──
+  '2': '#e8781e',   // CC BY-NC 2.0         — pomarańcz
+  '14':'#cc6618',   // CC BY-NC 4.0
+  // ── NC + inne ograniczenia ──
+  '1': '#d44800',   // CC BY-NC-SA 2.0      — czerwonawa
+  '15':'#bb3d00',   // CC BY-NC-SA 4.0
+  '3': '#c0291c',   // CC BY-NC-ND 2.0      — czerwień
+  '16':'#a82215',   // CC BY-NC-ND 4.0
+  // ── Wszelkie prawa zastrzeżone ──
+  '0': '#7b1414',   // ARR                  — ciemna czerwień
+};
+function cmpSN(licId) {
+  return CMP_LICENSE_SHORT[licId] || CMP_LICENSE_NAMES[licId] || ('Lic ' + licId);
+}
+function cmpLicColor(id) { return CMP_LICENSE_COLORS[id] || '#555'; }
+function cmpLicName(id)  { return CMP_LICENSE_NAMES[id]  || ('Licencja ' + id); }
+
+// Attach tooltip to el; getHtml(e) called on mouseenter, or pass a string directly.
+function cmpAddTip(el, getHtml, { onEnter, onLeave } = {}) {
+  el.addEventListener('mouseenter', e => {
+    cmpShowTip(e, typeof getHtml === 'function' ? getHtml(e) : getHtml);
+    onEnter && onEnter(e);
+  });
+  el.addEventListener('mousemove', cmpMoveTip);
+  el.addEventListener('mouseleave', e => { cmpHideTip(); onLeave && onLeave(e); });
+}
+
+function cmpFetchedAtLabel(profile) {
+  if (!profile.fetchedAt) return '';
+  const d = new Date(profile.fetchedAt);
+  const age = Math.round((Date.now() - d) / 86400000);
+  return `dane z ${d.toLocaleDateString('pl-PL')} (${age}d temu)`;
+}
+
+let cmpDir = null;
+let cmpProfiles = [];        // [{filename, username, fetchedAt, photos, history}]
+let cmpLastResults = null;   // for CSV export
+let cmpActiveTagFilter = null;   // string | '__untagged__' | null
+let cmpShowEmptyInList = false;  // show profiles with 0 photos in list
+
+// ── Display-name overrides (localStorage, keyed by filename) ──
+// profile.username = original Flickr username (used for scraping)
+// cmpDN(profile)   = custom display name (or username if none set)
+function cmpGetStoredNames() {
+  try { return JSON.parse(localStorage.getItem('fls-display-names') || '{}'); } catch { return {}; }
+}
+function cmpGetDisplayName(filename) {
+  return cmpGetStoredNames()[filename] || null;
+}
+function cmpSetDisplayName(filename, name) {
+  const m = cmpGetStoredNames();
+  if (name && name.trim()) m[filename] = name.trim();
+  else delete m[filename];
+  try { localStorage.setItem('fls-display-names', JSON.stringify(m)); } catch {}
+}
+function cmpDN(profile) {
+  return cmpGetDisplayName(profile.filename) || profile.username;
+}
+
+// ── Tags / groups (localStorage, keyed by filename) ──
+function cmpGetTagsData() {
+  try { return JSON.parse(localStorage.getItem('fls-tags') || '{}'); } catch { return {}; }
+}
+function cmpGetTags(filename) {
+  return cmpGetTagsData()[filename] || [];
+}
+function cmpSetTags(filename, tags) {
+  const m = cmpGetTagsData();
+  const clean = [...new Set((tags||[]).map(t => t.trim()).filter(Boolean))];
+  if (clean.length) m[filename] = clean; else delete m[filename];
+  try { localStorage.setItem('fls-tags', JSON.stringify(m)); } catch {}
+}
+function cmpGetAllTags() {
+  const data = cmpGetTagsData();
+  const set = new Set();
+  for (const tags of Object.values(data)) tags.forEach(t => set.add(t));
+  return [...set].sort((a, b) => a.localeCompare(b, 'pl'));
+}
+function cmpAddTag(filename, tag) {
+  const t = tag.trim(); if (!t) return;
+  const tags = cmpGetTags(filename);
+  if (!tags.includes(t)) cmpSetTags(filename, [...tags, t]);
+}
+function cmpRemoveTag(filename, tag) {
+  cmpSetTags(filename, cmpGetTags(filename).filter(t => t !== tag));
+}
+
+// ── Tooltip shared across comparison section ──
+let _cmpTip = null;
+function cmpGetTip() {
+  if (!_cmpTip) {
+    _cmpTip = document.createElement('div');
+    _cmpTip.style.cssText = 'position:fixed;background:rgba(8,12,28,.97);color:#e0e0e0;' +
+      'border:1px solid #1a4a8a;padding:.45rem .75rem;border-radius:8px;font-size:.78rem;' +
+      'pointer-events:none;z-index:9999999;display:none;max-width:260px;line-height:1.6;' +
+      'box-shadow:0 4px 20px rgba(0,0,0,.5)';
+    document.body.appendChild(_cmpTip);
+  }
+  return _cmpTip;
+}
+function cmpShowTip(e, html) {
+  const t = cmpGetTip(); t.innerHTML = html; t.style.display = 'block'; cmpMoveTip(e);
+}
+function cmpMoveTip(e) {
+  const t = cmpGetTip();
+  const x = e.clientX + 14, y = e.clientY - 10;
+  const W = window.innerWidth, H = window.innerHeight;
+  t.style.left = (x + 270 > W ? e.clientX - 270 : x) + 'px';
+  t.style.top  = (y + 120 > H ? e.clientY - 120 : y) + 'px';
+}
+function cmpHideTip() { const t = cmpGetTip(); t.style.display = 'none'; }
+
+// ── Helpers: pre-aggregated data (no photos array needed) ──
+function cmpAnalyzePrecomputed(profile) {
+  return {
+    total:  profile.total  || 0,
+    byLic:  profile.byLic  || {},
+    byYear: profile.byYear || {},
+  };
+}
+
+// Filter pre-aggregated byYear to a year range; returns {total, byLic, byYear}
+function cmpFilterByYear(profile, fromStr, toStr) {
+  if (!fromStr && !toStr) return cmpAnalyzePrecomputed(profile);
+  const fromYear = fromStr ? fromStr.slice(0, 4) : '0000';
+  const toYear   = toStr   ? toStr.slice(0, 4)   : '9999';
+  const byYear = {}, byLic = {};
+  let total = 0;
+  for (const [yr, licMap] of Object.entries(profile.byYear || {})) {
+    if (yr >= fromYear && yr <= toYear) {
+      byYear[yr] = licMap;
+      for (const [k, v] of Object.entries(licMap)) {
+        byLic[k] = (byLic[k] || 0) + v;
+        total += v;
+      }
+    }
+  }
+  return { total, byLic, byYear };
+}
+
+// ── Load profiles from pre-built data/ directory via fetch ──
+async function cmpLoadProfiles() {
+  cmpProfiles = [];
+  const lbl = document.getElementById('cmp-folder-label');
+  lbl.textContent = 'Ładowanie danych…';
+
+  let index;
+  try {
+    const r = await fetch('data/index.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    index = await r.json();
+  } catch (e) {
+    lbl.textContent = '⚠️ Nie można załadować danych (' + e.message + ')';
+    return;
+  }
+
+  const entries = index.profiles || [];
+  let loaded = 0;
+
+  await Promise.all(entries.map(async ({ filename, username }) => {
+    try {
+      const r = await fetch('data/' + filename);
+      if (!r.ok) return;
+      const data = await r.json();
+      if (!data.username) return;
+      cmpProfiles.push({
+        filename,
+        username:  data.username,
+        userId:    data.userId   || '',
+        fetchedAt: data.fetchedAt || null,
+        total:     data.total    || 0,
+        byLic:     data.byLic    || {},
+        byYear:    data.byYear   || {},
+        history:   data.history  || [],
+      });
+      loaded++;
+    } catch { /* skip malformed */ }
+  }));
+
+  cmpProfiles.sort((a, b) => (a.username || '').localeCompare(b.username || ''));
+  lbl.textContent = 'Załadowano ' + loaded + ' profili';
+  cmpRenderProfileList();
+}
+
+// ── Render tag filter bar ──
+function cmpRenderTagBar() {
+  const bar = document.getElementById('cmp-tag-bar');
+  const allTags = cmpGetAllTags();
+  const emptyCount = cmpProfiles.filter(p => (p.total || 0) === 0).length;
+
+  // Show bar only when there are tags or empty profiles
+  if (!allTags.length && !emptyCount) { bar.style.display = 'none'; bar.innerHTML = ''; return; }
+
+  bar.style.display = '';
+  bar.innerHTML = '';
+  bar.style.cssText = 'display:flex;align-items:center;flex-wrap:wrap;gap:.3rem .4rem;' +
+    'background:#0a1a30;border:1px solid #0f3460;border-radius:8px;padding:.5rem .75rem;margin-bottom:.65rem';
+
+  const lbl = document.createElement('span');
+  lbl.style.cssText = 'font-size:.7rem;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;margin-right:.15rem';
+  lbl.textContent = 'Filtr:';
+  bar.appendChild(lbl);
+
+  function mkFilterBtn(label, value, count) {
+    const btn = document.createElement('button');
+    const isActive = cmpActiveTagFilter === value;
+    btn.style.cssText = `font-size:.74rem;padding:.2rem .6rem;border-radius:100px;border:1px solid;` +
+      `cursor:pointer;transition:all .15s;white-space:nowrap;font-weight:${isActive ? 700 : 400};` +
+      `background:${isActive ? '#1a4a8a' : '#0a1525'};` +
+      `color:${isActive ? '#a0c4ff' : '#555'};` +
+      `border-color:${isActive ? '#1a4a8a' : '#1a3060'}`;
+    btn.innerHTML = label + (count !== undefined ? ` <span style="opacity:.6;font-size:.68rem">${count}</span>` : '');
+    btn.addEventListener('mouseenter', () => { if (cmpActiveTagFilter !== value) { btn.style.color = '#a0c4ff'; btn.style.borderColor = '#1a4a8a'; } });
+    btn.addEventListener('mouseleave', () => { if (cmpActiveTagFilter !== value) { btn.style.color = '#555'; btn.style.borderColor = '#1a3060'; } });
+    btn.addEventListener('click', () => {
+      cmpActiveTagFilter = (cmpActiveTagFilter === value) ? null : value;
+      cmpRenderProfileList();
+    });
+    return btn;
+  }
+
+  // "Wszystkie" - only show when a filter is active
+  if (cmpActiveTagFilter !== null) {
+    bar.appendChild(mkFilterBtn('Wszystkie', null));
+  }
+
+  for (const tag of allTags) {
+    const count = cmpProfiles.filter(p => cmpGetTags(p.filename).includes(tag)).length;
+    bar.appendChild(mkFilterBtn(tag, tag, count));
+  }
+
+  if (cmpProfiles.some(p => !cmpGetTags(p.filename).length)) {
+    const count = cmpProfiles.filter(p => !cmpGetTags(p.filename).length).length;
+    bar.appendChild(mkFilterBtn('Bez tagu', '__untagged__', count));
+  }
+}
+
+// ── Render profile checkboxes ──
+function cmpRenderProfileList() {
+  cmpRenderTagBar();
+
+  const container = document.getElementById('cmp-profile-list');
+  const selAllBtn = document.getElementById('cmp-sel-all-btn');
+
+  if (!cmpProfiles.length) {
+    container.innerHTML = '<p style="color:#888;font-size:.84rem">Brak plików .json w folderze.</p>';
+    container.style.display = '';
+    selAllBtn.style.display = 'none';
+    cmpUpdateGoBtn();
+    return;
+  }
+
+  // Apply tag filter
+  let visibleProfiles = cmpProfiles;
+  if (cmpActiveTagFilter === '__untagged__') {
+    visibleProfiles = cmpProfiles.filter(p => !cmpGetTags(p.filename).length);
+  } else if (cmpActiveTagFilter) {
+    visibleProfiles = cmpProfiles.filter(p => cmpGetTags(p.filename).includes(cmpActiveTagFilter));
+  }
+
+  // Split empty (0 photos) from non-empty
+  const nonEmpty = visibleProfiles.filter(p => (p.total || 0) > 0);
+  const empty    = visibleProfiles.filter(p => (p.total || 0) === 0);
+  const shownProfiles = cmpShowEmptyInList ? visibleProfiles : nonEmpty;
+
+  const dates   = cmpProfiles.map(p => p.fetchedAt ? new Date(p.fetchedAt) : null).filter(Boolean);
+  const newest  = dates.length ? new Date(Math.max(...dates)) : null;
+  const WEEK_MS = 7 * 24 * 3600 * 1000;
+
+  container.innerHTML = '';
+
+  // Empty profiles notice
+  if (empty.length) {
+    const notice = document.createElement('div');
+    notice.style.cssText = 'display:flex;align-items:center;gap:.6rem;padding:.35rem .6rem;margin-bottom:.4rem;' +
+      'font-size:.78rem;color:#555;background:#0a1525;border-radius:6px;border:1px solid #0f3060';
+    const msg = document.createElement('span');
+    msg.style.flex = '1';
+    msg.textContent = cmpShowEmptyInList
+      ? `Wyświetlam też ${empty.length} profil${empty.length===1?'':'e'} bez zdjęć`
+      : `${empty.length} profil${empty.length===1?'':'e'} bez zdjęć ukryt${empty.length===1?'y':'ych'}`;
+    const toggleBtn = document.createElement('button');
+    toggleBtn.style.cssText = 'background:none;border:1px solid #1a3060;border-radius:5px;color:#555;' +
+      'font-size:.72rem;cursor:pointer;padding:.15rem .5rem;transition:color .15s,border-color .15s';
+    toggleBtn.textContent = cmpShowEmptyInList ? 'Ukryj' : 'Pokaż';
+    toggleBtn.addEventListener('mouseenter', () => { toggleBtn.style.color='#a0c4ff'; toggleBtn.style.borderColor='#1a4a8a'; });
+    toggleBtn.addEventListener('mouseleave', () => { toggleBtn.style.color='#555'; toggleBtn.style.borderColor='#1a3060'; });
+    toggleBtn.addEventListener('click', () => { cmpShowEmptyInList = !cmpShowEmptyInList; cmpRenderProfileList(); });
+    notice.append(msg, toggleBtn);
+    container.appendChild(notice);
+  }
+
+  if (!shownProfiles.length) {
+    const msg = document.createElement('p');
+    msg.style.cssText = 'color:#555;font-size:.84rem;padding:.3rem 0';
+    msg.textContent = cmpActiveTagFilter ? 'Brak profili z tym tagiem.' : 'Brak profili do wyświetlenia.';
+    container.appendChild(msg);
+    container.style.display = '';
+    selAllBtn.style.display = 'none';
+    cmpUpdateGoBtn();
+    return;
+  }
+
+  shownProfiles.forEach((p) => {
+    // Find global index for checkbox value
+    const globalIdx = cmpProfiles.indexOf(p);
+    const d         = p.fetchedAt ? new Date(p.fetchedAt) : null;
+    const age       = d ? Math.round((Date.now() - d) / 86400000) : null;
+    const isStale   = newest && d && (newest - d) > WEEK_MS;
+    const dateStr   = d ? d.toLocaleDateString('pl-PL', {day:'2-digit',month:'2-digit',year:'numeric'}) : 'brak daty';
+    const hasCustom = !!cmpGetDisplayName(p.filename);
+    const isEmpty   = (p.total || 0) === 0;
+
+    const item = document.createElement('div');
+    item.className = 'cmp-profile-item';
+    if (isEmpty) item.style.opacity = '.5';
+
+    // checkbox
+    const chk = document.createElement('input');
+    chk.type = 'checkbox'; chk.value = globalIdx;
+    chk.style.cssText = 'width:14px;height:14px;cursor:pointer;accent-color:#ff6b6b;flex-shrink:0';
+    chk.addEventListener('change', cmpUpdateGoBtn);
+
+    // ── name area ──
+    const nameWrap = document.createElement('div');
+    nameWrap.style.cssText = 'flex:1;display:flex;align-items:center;gap:.35rem;min-width:0';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.style.cssText = 'font-size:.87rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:color .12s';
+    nameSpan.textContent = cmpDN(p);
+    nameSpan.title = 'Kliknij aby zobaczyć statystyki';
+    nameSpan.addEventListener('mouseenter', () => nameSpan.style.color = '#d0e8ff');
+    nameSpan.addEventListener('mouseleave', () => nameSpan.style.color = '');
+    nameSpan.addEventListener('click', e => { e.stopPropagation(); cmpShowProfileStats(p); });
+
+    const origSpan = document.createElement('span');
+    origSpan.style.cssText = 'font-size:.72rem;color:#555;white-space:nowrap;flex-shrink:0';
+    origSpan.textContent = hasCustom ? `(${p.username})` : '';
+
+    const editBtn = document.createElement('button');
+    editBtn.style.cssText = 'background:none;border:none;cursor:pointer;padding:0 .15rem;color:#555;' +
+      'font-size:.75rem;line-height:1;flex-shrink:0;transition:color .15s;opacity:0';
+    editBtn.textContent = '✏';
+    editBtn.title = 'Edytuj nazwę roboczą';
+    editBtn.addEventListener('mouseenter', () => editBtn.style.color = '#a0c4ff');
+    editBtn.addEventListener('mouseleave', () => editBtn.style.color = '#555');
+
+    nameWrap.append(nameSpan, origSpan, editBtn);
+    item.addEventListener('mouseenter', () => { editBtn.style.opacity = '1'; addTagBtn.style.opacity = '1'; });
+    item.addEventListener('mouseleave', () => { editBtn.style.opacity = '0'; addTagBtn.style.opacity = '0'; });
+
+    // ── inline name edit ──
+    editBtn.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      const input = document.createElement('input');
+      input.type = 'text'; input.value = cmpDN(p);
+      input.style.cssText = 'flex:1;background:#0a1525;border:1px solid #1a4a8a;border-radius:5px;' +
+        'color:#e0e0e0;padding:.18rem .5rem;font-size:.85rem;font-weight:600;outline:none;min-width:0';
+      input.setAttribute('placeholder', p.username);
+
+      const saveBtn = document.createElement('button');
+      saveBtn.style.cssText = 'background:#1a4a8a;color:#a0c4ff;border:none;border-radius:5px;' +
+        'cursor:pointer;padding:.2rem .55rem;font-size:.78rem;flex-shrink:0;transition:background .15s';
+      saveBtn.textContent = '✓';
+      saveBtn.addEventListener('mouseenter', () => saveBtn.style.background = '#27ae60');
+      saveBtn.addEventListener('mouseleave', () => saveBtn.style.background = '#1a4a8a');
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.style.cssText = 'background:none;color:#555;border:1px solid #1a3060;border-radius:5px;' +
+        'cursor:pointer;padding:.2rem .55rem;font-size:.78rem;flex-shrink:0;transition:color .15s';
+      cancelBtn.textContent = '✕';
+      cancelBtn.addEventListener('mouseenter', () => cancelBtn.style.color = '#e74c3c');
+      cancelBtn.addEventListener('mouseleave', () => cancelBtn.style.color = '#555');
+
+      const resetLink = document.createElement('button');
+      resetLink.style.cssText = 'background:none;border:none;color:#444;font-size:.72rem;cursor:pointer;' +
+        'text-decoration:underline;flex-shrink:0;padding:0;transition:color .1s';
+      resetLink.textContent = 'reset';
+      resetLink.title = `Przywróć oryginalną nazwę: ${p.username}`;
+      resetLink.style.display = hasCustom ? '' : 'none';
+      resetLink.addEventListener('mouseenter', () => resetLink.style.color = '#e74c3c');
+      resetLink.addEventListener('mouseleave', () => resetLink.style.color = '#444');
+
+      nameWrap.innerHTML = ''; nameWrap.style.gap = '.4rem';
+      nameWrap.append(input, saveBtn, cancelBtn, resetLink);
+      setTimeout(() => { input.focus(); input.select(); }, 0);
+
+      const doSave   = () => { cmpSetDisplayName(p.filename, input.value.trim() || null); cmpRenderProfileList(); };
+      const doCancel = () => cmpRenderProfileList();
+      const doReset  = () => { cmpSetDisplayName(p.filename, null); cmpRenderProfileList(); };
+
+      saveBtn.addEventListener('click',  e => { e.stopPropagation(); doSave(); });
+      cancelBtn.addEventListener('click', e => { e.stopPropagation(); doCancel(); });
+      resetLink.addEventListener('click', e => { e.stopPropagation(); doReset(); });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter')  { e.preventDefault(); doSave(); }
+        if (e.key === 'Escape') { e.preventDefault(); doCancel(); }
+      });
+    });
+
+    // ── Tag chips ──
+    const tagsWrap = document.createElement('div');
+    tagsWrap.style.cssText = 'display:flex;align-items:center;gap:.2rem;flex-wrap:wrap;flex-shrink:0;';
+
+    function renderTagChips() {
+      tagsWrap.innerHTML = '';
+      const tags = cmpGetTags(p.filename);
+      tags.forEach(tag => {
+        const chip = document.createElement('span');
+        chip.style.cssText = 'display:inline-flex;align-items:center;gap:.2rem;background:#0f3460;' +
+          'color:#a0c4ff;border:1px solid #1a4a8a;border-radius:100px;padding:.08rem .4rem;' +
+          'font-size:.7rem;cursor:default;transition:border-color .15s';
+        chip.textContent = tag;
+        const rmBtn = document.createElement('button');
+        rmBtn.textContent = '×';
+        rmBtn.style.cssText = 'background:none;border:none;color:#555;cursor:pointer;padding:0;' +
+          'font-size:.8rem;line-height:1;transition:color .1s;margin-left:.05rem;flex-shrink:0';
+        rmBtn.title = `Usuń tag "${tag}"`;
+        rmBtn.addEventListener('mouseenter', () => rmBtn.style.color = '#e74c3c');
+        rmBtn.addEventListener('mouseleave', () => rmBtn.style.color = '#555');
+        rmBtn.addEventListener('click', e => { e.stopPropagation(); cmpRemoveTag(p.filename, tag); renderTagChips(); cmpRenderTagBar(); });
+        chip.appendChild(rmBtn);
+        tagsWrap.appendChild(chip);
+      });
+      tagsWrap.appendChild(addTagBtn);
+    }
+
+    // ── Add tag button & popover ──
+    const addTagBtn = document.createElement('button');
+    addTagBtn.style.cssText = 'background:none;border:1px dashed #1a3060;border-radius:100px;color:#444;' +
+      'cursor:pointer;padding:.08rem .4rem;font-size:.7rem;transition:all .15s;opacity:0;white-space:nowrap';
+    addTagBtn.textContent = '+ tag';
+    addTagBtn.addEventListener('mouseenter', () => { addTagBtn.style.color='#a0c4ff'; addTagBtn.style.borderColor='#1a4a8a'; });
+    addTagBtn.addEventListener('mouseleave', () => { addTagBtn.style.color='#444'; addTagBtn.style.borderColor='#1a3060'; });
+    addTagBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      // Remove any existing popovers
+      document.querySelectorAll('.fls-tag-popover').forEach(el => el.remove());
+
+      const existingTags = cmpGetAllTags().filter(t => !cmpGetTags(p.filename).includes(t));
+      const pop = document.createElement('div');
+      pop.className = 'fls-tag-popover';
+      pop.style.cssText = 'position:absolute;z-index:10000;background:#0d2137;border:1px solid #1a4a8a;' +
+        'border-radius:8px;padding:.5rem;box-shadow:0 8px 30px rgba(0,0,0,.6);min-width:160px;max-width:220px';
+
+      const input = document.createElement('input');
+      input.type = 'text'; input.placeholder = 'Nowy tag…';
+      input.style.cssText = 'width:100%;background:#0a1525;border:1px solid #1a4a8a;border-radius:5px;' +
+        'color:#e0e0e0;padding:.25rem .5rem;font-size:.78rem;outline:none;margin-bottom:.35rem;box-sizing:border-box';
+
+      pop.appendChild(input);
+
+      if (existingTags.length) {
+        const suggestDiv = document.createElement('div');
+        suggestDiv.style.cssText = 'display:flex;flex-wrap:wrap;gap:.2rem;margin-bottom:.2rem';
+        existingTags.forEach(tag => {
+          const s = document.createElement('button');
+          s.textContent = tag;
+          s.style.cssText = 'background:#0f3460;color:#888;border:1px solid #1a3060;border-radius:100px;' +
+            'padding:.1rem .45rem;font-size:.7rem;cursor:pointer;transition:all .12s';
+          s.addEventListener('mouseenter', () => { s.style.color='#a0c4ff'; s.style.borderColor='#1a4a8a'; });
+          s.addEventListener('mouseleave', () => { s.style.color='#888'; s.style.borderColor='#1a3060'; });
+          s.addEventListener('click', ev => {
+            ev.stopPropagation();
+            cmpAddTag(p.filename, tag);
+            pop.remove();
+            renderTagChips();
+            cmpRenderTagBar();
+          });
+          suggestDiv.appendChild(s);
+        });
+        pop.appendChild(suggestDiv);
+      }
+
+      const confirmBtn = document.createElement('button');
+      confirmBtn.textContent = '+ Dodaj';
+      confirmBtn.style.cssText = 'width:100%;background:#1a4a8a;color:#a0c4ff;border:none;border-radius:5px;' +
+        'padding:.22rem .5rem;font-size:.76rem;cursor:pointer;transition:background .15s;margin-top:.15rem';
+      confirmBtn.addEventListener('mouseenter', () => confirmBtn.style.background = '#27ae60');
+      confirmBtn.addEventListener('mouseleave', () => confirmBtn.style.background = '#1a4a8a');
+      confirmBtn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const val = input.value.trim();
+        if (val) { cmpAddTag(p.filename, val); pop.remove(); renderTagChips(); cmpRenderTagBar(); }
+      });
+      input.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter') { ev.preventDefault(); confirmBtn.click(); }
+        if (ev.key === 'Escape') { ev.preventDefault(); pop.remove(); }
+      });
+      pop.appendChild(confirmBtn);
+
+      // Position below the button
+      item.style.position = 'relative';
+      item.appendChild(pop);
+      const rect = addTagBtn.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      pop.style.top  = (rect.bottom - itemRect.top + 4) + 'px';
+      pop.style.left = (rect.left   - itemRect.left) + 'px';
+
+      setTimeout(() => {
+        const close = ev => { if (!pop.contains(ev.target)) { pop.remove(); document.removeEventListener('click', close); } };
+        document.addEventListener('click', close);
+        input.focus();
+      }, 0);
+    });
+
+    renderTagChips();
+
+    // date & count
+    const dateEl = document.createElement('span');
+    dateEl.style.cssText = `font-size:.78rem;color:${isStale ? '#ffd93d' : '#666'};white-space:nowrap;flex-shrink:0`;
+    dateEl.textContent = (isStale ? '⚠️ ' : '') + dateStr + (age !== null ? ` (${age}d temu)` : '');
+
+    const countEl = document.createElement('span');
+    countEl.style.cssText = `font-size:.78rem;color:${isEmpty ? '#444' : '#555'};white-space:nowrap;flex-shrink:0`;
+    countEl.textContent = isEmpty ? 'brak zdjęć' : (p.total || 0).toLocaleString() + ' zdjęć';
+
+    item.addEventListener('click', e => {
+      if (e.target === chk || e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+      chk.checked = !chk.checked;
+      cmpUpdateGoBtn();
+    });
+    item.style.cursor = 'pointer';
+
+    item.append(chk, nameWrap, tagsWrap, dateEl, countEl);
+    container.appendChild(item);
+  });
+
+  container.style.display = '';
+  selAllBtn.style.display = shownProfiles.length ? '' : 'none';
+  cmpUpdateGoBtn();
+}
+
+function cmpSelectAll() {
+  const checks = document.querySelectorAll('#cmp-profile-list input[type=checkbox]');
+  const allChecked = [...checks].every(c => c.checked);
+  checks.forEach(c => c.checked = !allChecked);
+  document.getElementById('cmp-sel-all-btn').textContent = allChecked ? 'Zaznacz wszystkie' : 'Odznacz wszystkie';
+  cmpUpdateGoBtn();
+}
+
+function cmpUpdateGoBtn() {
+  const checked = document.querySelectorAll('#cmp-profile-list input[type=checkbox]:checked').length;
+  document.getElementById('cmp-go-btn').disabled = checked < 2;
+}
+
+// ── Analyze one profile's photos ──
+function cmpAnalyze(photos) {
+  const byLic = {}, byYear = {};
+  for (const p of photos) {
+    const k = String(p.license ?? '0');
+    byLic[k] = (byLic[k] || 0) + 1;
+    // year from datetaken ("2016-04-15 ...") or dateupload (unix timestamp string)
+    let yr = null;
+    if (p.datetaken && p.datetaken.length >= 4) {
+      yr = p.datetaken.slice(0, 4);
+    } else if (p.dateupload) {
+      yr = new Date(+p.dateupload * 1000).getFullYear().toString();
+    }
+    if (yr && yr >= '1990' && yr <= '2099') {
+      if (!byYear[yr]) byYear[yr] = {};
+      byYear[yr][k] = (byYear[yr][k] || 0) + 1;
+    }
+  }
+  return { total: photos.length, byLic, byYear };
+}
+
+function cmpBuildDonut(byLic, total, size = 110) {
+  const r = size * 0.38, cx = size / 2, cy = size / 2;
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('width', size); svg.setAttribute('height', size);
+  svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+  svg.style.cssText = 'overflow:visible';
+
+  if (!total) {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+    c.setAttribute('fill', 'none'); c.setAttribute('stroke', '#1a4a8a');
+    c.setAttribute('stroke-width', size * 0.13);
+    svg.appendChild(c);
+    return svg;
+  }
+
+  const stroke = size * 0.13;
+  const circumference = 2 * Math.PI * r;
+  let offset = 0;
+
+  const sorted = Object.entries(byLic).sort((a,b) => b[1]-a[1]);
+
+  for (const [licId, count] of sorted) {
+    const frac = count / total;
+    const dash = frac * circumference;
+    const gap  = circumference - dash;
+    const pct  = (frac * 100).toFixed(1);
+    const color = cmpLicColor(licId);
+    const name  = cmpLicName(licId);
+
+    const circle = document.createElementNS(NS, 'circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('stroke', color);
+    circle.setAttribute('stroke-width', stroke);
+    circle.setAttribute('stroke-dasharray', `${dash} ${gap}`);
+    circle.setAttribute('stroke-dashoffset', -offset * circumference);
+    circle.style.transform = 'rotate(-90deg)';
+    circle.style.transformOrigin = `${cx}px ${cy}px`;
+    circle.style.cursor = 'default';
+    circle.style.transition = 'opacity .15s, stroke-width .15s';
+
+    cmpAddTip(circle,
+      `<strong style="color:${color}">${name}</strong><br>` +
+      `<strong style="font-size:1rem">${count.toLocaleString()}</strong> zdjęć · ${pct}%`,
+      {
+        onEnter: () => circle.setAttribute('stroke-width', stroke * 1.35),
+        onLeave: () => circle.setAttribute('stroke-width', stroke),
+      }
+    );
+
+    svg.appendChild(circle);
+    offset += frac;
+  }
+
+  // Center text
+  const t = document.createElementNS(NS, 'text');
+  t.setAttribute('x', cx); t.setAttribute('y', cy + 1);
+  t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','middle');
+  t.setAttribute('fill','#e0e0e0'); t.setAttribute('font-size', size * 0.13);
+  t.setAttribute('font-family','-apple-system,sans-serif'); t.setAttribute('font-weight','600');
+  t.textContent = total >= 1000 ? (total/1000).toFixed(1)+'k' : total;
+  svg.appendChild(t);
+  return svg;
+}
+
+function cmpBuildLegend(byLic, total) {
+  const wrap = document.createElement('div');
+  const sorted = Object.entries(byLic).sort((a,b) => b[1]-a[1]);
+  for (const [id, cnt] of sorted) {
+    const pct   = total ? ((cnt/total)*100).toFixed(1) : '0.0';
+    const color = cmpLicColor(id);
+    const name  = cmpLicName(id);
+    const short = cmpSN(id);
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:.35rem;margin-bottom:.18rem;font-size:.74rem;' +
+      'cursor:default;border-radius:4px;padding:.1rem .25rem;margin-left:-.25rem;transition:background .1s;' +
+      'min-width:0;overflow:hidden';
+
+    const dot = document.createElement('span');
+    dot.style.cssText = `width:8px;height:8px;border-radius:2px;background:${color};flex-shrink:0`;
+
+    const lbl = document.createElement('span');
+    lbl.style.cssText = 'color:#aaa;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    lbl.textContent = short;
+
+    const pctEl = document.createElement('span');
+    pctEl.style.cssText = 'color:#ccc;font-weight:600;flex-shrink:0;white-space:nowrap;padding-left:.15rem';
+    pctEl.textContent = pct + '%';
+
+    row.append(dot, lbl, pctEl);
+
+    cmpAddTip(row,
+      `<strong style="color:${color}">${name}</strong><br>` +
+      `<strong style="font-size:1rem">${cnt.toLocaleString()}</strong> zdjęć · ${pct}%`,
+      { onEnter: () => row.style.background = 'rgba(255,255,255,.07)', onLeave: () => row.style.background = '' }
+    );
+
+    wrap.appendChild(row);
+  }
+  return wrap;
+}
+
+// ── Timeline bar chart SVG (shared by profile modal and group section) ──
+// opts.H: SVG height (default 130)
+// opts.activeYear: year string to highlight (group section only)
+// opts.onYearClick: callback(yr) when a bar is clicked (group section only)
+// opts.filterFrom / opts.filterTo: for dimming inactive bars (group section only)
+function cmpBuildTimelineSVG(years, byYear, opts = {}) {
+  const NS = 'http://www.w3.org/2000/svg';
+  const padL = 34, padR = 8, padT = 8, padB = 22, W = 520;
+  const H = opts.H || 130;
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('width', '100%'); svg.setAttribute('height', H);
+  svg.style.cssText = 'display:block;overflow:visible';
+  const cW = W - padL - padR, cH = H - padT - padB;
+  const maxYrTot = Math.max(...years.map(yr => Object.values(byYear[yr] || {}).reduce((a,b) => a+b, 0)), 1);
+
+  for (let i = 0; i <= 3; i++) {
+    const val = Math.round(maxYrTot * i / 3), y = padT + cH - (i/3) * cH;
+    const gl = document.createElementNS(NS, 'line');
+    gl.setAttribute('x1', padL); gl.setAttribute('x2', W - padR);
+    gl.setAttribute('y1', y.toFixed(1)); gl.setAttribute('y2', y.toFixed(1));
+    gl.setAttribute('stroke', '#1a3060'); gl.setAttribute('stroke-width', '0.5');
+    svg.appendChild(gl);
+    const gt = document.createElementNS(NS, 'text');
+    gt.setAttribute('x', (padL - 4).toString()); gt.setAttribute('y', (y + 3.5).toFixed(1));
+    gt.setAttribute('text-anchor', 'end'); gt.setAttribute('fill', '#555');
+    gt.setAttribute('font-size', '8'); gt.setAttribute('font-family', 'system-ui,sans-serif');
+    gt.textContent = val >= 1000 ? (val/1000).toFixed(1) + 'k' : val;
+    svg.appendChild(gt);
+  }
+
+  const slotW = cW / years.length, barW = Math.max(2, slotW * 0.72);
+  const { filterFrom, filterTo, onYearClick } = opts;
+
+  years.forEach((yr, xi) => {
+    const licMap = byYear[yr] || {}, yrTot = Object.values(licMap).reduce((a,b) => a+b, 0);
+    const x = padL + xi * slotW + (slotW - barW) / 2;
+    const isActive = (filterFrom || filterTo)
+      ? !(filterFrom && filterFrom > yr + '-12-31') && !(filterTo && filterTo < yr + '-01-01')
+      : false;
+
+    if (isActive) {
+      const hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', (x - 3).toFixed(1));
+      hl.setAttribute('y', padT.toString());
+      hl.setAttribute('width', (barW + 6).toFixed(1));
+      hl.setAttribute('height', (cH + padB - 4).toFixed(1));
+      hl.setAttribute('fill', 'rgba(160,196,255,.09)');
+      hl.setAttribute('rx', '3');
+      svg.appendChild(hl);
+    }
+
+    const sortedLics = Object.entries(licMap).sort((a,b) => b[1]-a[1]);
+    let yAcc = 0;
+    for (const [licId, cnt] of sortedLics) {
+      const bH = Math.max(0.5, (cnt / maxYrTot) * cH);
+      const y  = padT + cH - yAcc - bH;
+      const rect = document.createElementNS(NS, 'rect');
+      rect.setAttribute('x', x.toFixed(1)); rect.setAttribute('y', y.toFixed(1));
+      rect.setAttribute('width', barW.toFixed(1)); rect.setAttribute('height', bH.toFixed(1));
+      rect.setAttribute('fill', cmpLicColor(licId));
+      if (onYearClick) rect.style.cssText = 'transition:opacity .12s';
+      if (onYearClick && (filterFrom || filterTo) && !isActive) rect.style.opacity = '0.35';
+      svg.appendChild(rect);
+      yAcc += bH;
+    }
+
+    const hit = document.createElementNS(NS, 'rect');
+    hit.setAttribute('x', (x - 2).toFixed(1)); hit.setAttribute('y', padT.toString());
+    hit.setAttribute('width', (barW + 4).toFixed(1)); hit.setAttribute('height', (cH + 2).toString());
+    hit.setAttribute('fill', 'transparent');
+    hit.style.cursor = onYearClick ? 'pointer' : 'default';
+
+    cmpAddTip(hit, e => {
+      const rows = sortedLics.slice(0, 5).map(([id, c]) => {
+        const pct = yrTot ? ((c/yrTot)*100).toFixed(1) : '0';
+        const col = cmpLicColor(id), nm = cmpLicName(id);
+        return `<div style="display:flex;align-items:center;gap:.3rem;margin-top:.15rem">` +
+          `<span style="width:7px;height:7px;border-radius:1px;background:${col};flex-shrink:0"></span>` +
+          `<span style="color:#aaa;flex:1">${nm}</span><strong style="color:#e0e0e0">${pct}%</strong></div>`;
+      }).join('');
+      const more = sortedLics.length > 5
+        ? `<div style="color:#555;font-size:.7rem;margin-top:.2rem">+${sortedLics.length-5} więcej</div>` : '';
+      return `<strong style="color:#ffd93d">${yr}</strong>` +
+        (onYearClick && isActive ? ' <span style="color:#a0c4ff;font-size:.7rem">▶ wybrany</span>' : '') +
+        `<br><strong style="font-size:1rem">${yrTot.toLocaleString()}</strong> zdjęć` +
+        (onYearClick ? ' łącznie' : '') +
+        `<div style="margin-top:.35rem;border-top:1px solid #1a3060;padding-top:.35rem">${rows}${more}</div>` +
+        (onYearClick ? `<div style="color:#555;font-size:.7rem;margin-top:.4rem">Kliknij aby ${isActive ? 'odfiltrować' : 'filtrować'}</div>` : '');
+    });
+
+    if (onYearClick) {
+      hit.addEventListener('click', () => {
+        cmpHideTip();
+        const yrFrom = yr + '-01-01', yrTo = yr + '-12-31';
+        if (isActive && filterFrom === yrFrom && filterTo === yrTo) onYearClick('', '');
+        else onYearClick(yrFrom, yrTo);
+      });
+    }
+    svg.appendChild(hit);
+
+    const yl = document.createElementNS(NS, 'text');
+    yl.setAttribute('x', (x + barW / 2).toFixed(1)); yl.setAttribute('y', (H - 6).toString());
+    yl.setAttribute('text-anchor', 'middle');
+    yl.setAttribute('fill', (onYearClick && isActive) ? '#ffd93d' : '#555');
+    yl.setAttribute('font-size', years.length > 20 ? '7' : '8');
+    yl.setAttribute('font-family', 'system-ui,sans-serif');
+    if (onYearClick && isActive) yl.setAttribute('font-weight', '700');
+    yl.textContent = years.length > 25 ? (xi % 2 === 0 ? yr.slice(2) : '') : yr.slice(2);
+    svg.appendChild(yl);
+  });
+
+  return svg;
+}
+
+// ── Single-profile statistics modal (full reactive view) ──
+function cmpShowProfileStats(profile) {
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9998;' +
+    'display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem 3rem;overflow-y:auto';
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  const panel = document.createElement('div');
+  panel.style.cssText = 'background:#0d2137;border:1px solid #1a4a8a;border-radius:14px;' +
+    'width:100%;max-width:800px;position:relative;box-shadow:0 12px 50px rgba(0,0,0,.75);' +
+    'flex-shrink:0;padding:1.5rem 1.5rem 1.2rem';
+
+  function close() { overlay.remove(); document.removeEventListener('keydown', onKey); }
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  document.addEventListener('keydown', onKey);
+
+  // ── Close ──
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'position:absolute;top:.85rem;right:.85rem;background:none;border:none;' +
+    'color:#444;font-size:1.1rem;cursor:pointer;padding:.2rem .55rem;border-radius:4px;' +
+    'transition:color .1s,background .1s;line-height:1;z-index:1';
+  closeBtn.addEventListener('mouseenter', () => { closeBtn.style.color='#e0e0e0'; closeBtn.style.background='rgba(255,255,255,.08)'; });
+  closeBtn.addEventListener('mouseleave', () => { closeBtn.style.color='#444'; closeBtn.style.background=''; });
+  closeBtn.addEventListener('click', close);
+  panel.appendChild(closeBtn);
+
+  // ── Header ──
+  const titleEl = document.createElement('div');
+  titleEl.style.cssText = 'font-size:1.2rem;font-weight:700;color:#ff6b6b;margin-bottom:.2rem;padding-right:2.5rem';
+  titleEl.textContent = cmpDN(profile);
+  panel.appendChild(titleEl);
+
+  const metaEl = document.createElement('div');
+  metaEl.style.cssText = 'font-size:.76rem;color:#555;margin-bottom:.9rem;display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center';
+  const flickrUrl = `https://www.flickr.com/photos/${encodeURIComponent(profile.username)}/`;
+  const flickrLink = document.createElement('a');
+  flickrLink.href = flickrUrl; flickrLink.target = '_blank';
+  flickrLink.style.cssText = 'color:#4a9eff;text-decoration:none';
+  flickrLink.textContent = flickrUrl;
+  flickrLink.addEventListener('mouseenter', () => flickrLink.style.textDecoration = 'underline');
+  flickrLink.addEventListener('mouseleave', () => flickrLink.style.textDecoration = 'none');
+  metaEl.appendChild(flickrLink);
+  const fetchedLabel = cmpFetchedAtLabel(profile);
+  if (fetchedLabel) {
+    const ageEl = document.createElement('span');
+    ageEl.textContent = fetchedLabel;
+    metaEl.appendChild(ageEl);
+  }
+  panel.appendChild(metaEl);
+
+  // ── Date filter bar ──
+  // All years from unfiltered data (for year quick-buttons)
+  const fullData = cmpAnalyzePrecomputed(profile);
+  const allYears = Object.keys(fullData.byYear || {}).sort();
+  let filterFrom = '', filterTo = '';
+
+  const filterBar = document.createElement('div');
+  filterBar.style.cssText = 'display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .55rem;' +
+    'margin-bottom:.9rem;background:#0f3460;border-radius:8px;padding:.55rem .85rem';
+
+  const filterLbl = document.createElement('span');
+  filterLbl.style.cssText = 'font-size:.7rem;color:#a0c4ff;font-weight:600;white-space:nowrap;flex-shrink:0';
+  filterLbl.textContent = 'Zakres dat:';
+
+  const iStyle = 'background:#0a1525;border:1px solid #1a4a8a;border-radius:5px;color:#ccc;' +
+    'font-size:.72rem;padding:.2rem .45rem;cursor:pointer;outline:none';
+  const fromIn = document.createElement('input');
+  fromIn.type = 'date'; fromIn.style.cssText = iStyle;
+  const dashSp = document.createElement('span');
+  dashSp.textContent = '–'; dashSp.style.cssText = 'color:#444;flex-shrink:0';
+  const toIn = document.createElement('input');
+  toIn.type = 'date'; toIn.style.cssText = iStyle;
+
+  const yrBtns = document.createElement('div');
+  yrBtns.style.cssText = 'display:flex;flex-wrap:wrap;gap:.2rem;align-items:center';
+  allYears.forEach(yr => {
+    const btn = document.createElement('button');
+    btn.dataset.year = yr;
+    btn.textContent = yr;
+    btn.style.cssText = 'font-size:.68rem;padding:.15rem .4rem;border-radius:4px;border:1px solid #1a4a8a;' +
+      'background:#0a1525;color:#555;cursor:pointer;transition:background .1s,color .1s;white-space:nowrap';
+    btn.addEventListener('click', () => {
+      const yF = yr+'-01-01', yT = yr+'-12-31';
+      if (filterFrom===yF && filterTo===yT) { filterFrom=''; filterTo=''; }
+      else { filterFrom=yF; filterTo=yT; }
+      syncFUI(); rebuildContent();
+    });
+    yrBtns.appendChild(btn);
+  });
+
+  const resetFBtn = document.createElement('button');
+  resetFBtn.textContent = '✕ reset';
+  resetFBtn.style.cssText = 'font-size:.7rem;color:#555;background:none;border:none;cursor:pointer;' +
+    'text-decoration:underline;transition:color .1s;white-space:nowrap;flex-shrink:0;display:none';
+  resetFBtn.addEventListener('click', () => { filterFrom=''; filterTo=''; syncFUI(); rebuildContent(); });
+  fromIn.addEventListener('change', () => { filterFrom=fromIn.value||''; syncFUI(); rebuildContent(); });
+  toIn.addEventListener('change',   () => { filterTo=toIn.value||'';     syncFUI(); rebuildContent(); });
+
+  function syncFUI() {
+    fromIn.value = filterFrom; toIn.value = filterTo;
+    resetFBtn.style.display = (filterFrom||filterTo) ? '' : 'none';
+    yrBtns.querySelectorAll('button[data-year]').forEach(b => {
+      const active = filterFrom===b.dataset.year+'-01-01' && filterTo===b.dataset.year+'-12-31';
+      b.style.background = active ? '#1a4a8a' : '#0a1525';
+      b.style.color      = active ? '#a0c4ff' : '#555';
+    });
+  }
+
+  filterBar.append(filterLbl, fromIn, dashSp, toIn, yrBtns, resetFBtn);
+  panel.appendChild(filterBar);
+
+  // ── Content placeholder (rebuilt on filter change) ──
+  const content = document.createElement('div');
+  panel.appendChild(content);
+
+  function rebuildContent() {
+    const data = cmpFilterByYear(profile, filterFrom, filterTo);
+    content.innerHTML = '';
+
+    if (data.total === 0) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'text-align:center;color:#555;padding:2rem;font-size:.88rem';
+      empty.textContent = (filterFrom||filterTo) ? 'Brak zdjęć w wybranym zakresie dat.' : 'Profil nie ma zdjęć.';
+      content.appendChild(empty);
+      return;
+    }
+
+    const sortedLics = Object.entries(data.byLic).sort((a,b) => b[1]-a[1]);
+    const licIds     = sortedLics.map(([id]) => id);
+    const years      = Object.keys(data.byYear||{}).sort();
+    const topId      = licIds[0];
+    const topColor   = cmpLicColor(topId);
+    const topShort   = cmpSN(topId);
+
+    // ── Stats grid ──
+    const sg = document.createElement('div');
+    sg.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.5rem;margin-bottom:1rem';
+    [
+      [data.total.toLocaleString(),        'Zdjęć',      '#ffd93d'],
+      [licIds.length,                      'Licencji',   '#a0c4ff'],
+      [years[0]||'—',                      'Rok od',     '#a0c4ff'],
+      [years[years.length-1]||'—',         'Rok do',     '#a0c4ff'],
+      [`<span style="color:${topColor}">${topShort}</span>`, 'Dominująca', topColor],
+    ].forEach(([v,lbl,c]) => {
+      const cell = document.createElement('div');
+      cell.style.cssText = 'background:#0f3460;border-radius:8px;padding:.65rem .8rem;text-align:center';
+      cell.innerHTML = `<div style="font-size:1.3rem;font-weight:700;color:${c}">${v}</div>` +
+        `<div style="font-size:.68rem;color:#666;margin-top:.15rem">${lbl}</div>`;
+      sg.appendChild(cell);
+    });
+    content.appendChild(sg);
+
+    // ── Charts: donut + timeline ──
+    const chartsRow = document.createElement('div');
+    chartsRow.style.cssText = 'display:grid;grid-template-columns:200px 1fr;gap:.75rem;margin-bottom:.85rem';
+
+    // Donut
+    const donutBox = document.createElement('div');
+    donutBox.style.cssText = 'background:#0f3460;border-radius:10px;padding:.8rem';
+    const donutHdr = document.createElement('div');
+    donutHdr.style.cssText = 'font-size:.68rem;color:#a0c4ff;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;font-weight:600';
+    donutHdr.textContent = 'Rozkład licencji';
+    donutBox.appendChild(donutHdr);
+    const donutCenter = document.createElement('div');
+    donutCenter.style.cssText = 'display:flex;justify-content:center;margin-bottom:.45rem';
+    donutCenter.appendChild(cmpBuildDonut(data.byLic, data.total, 110));
+    donutBox.appendChild(donutCenter);
+    donutBox.appendChild(cmpBuildLegend(data.byLic, data.total));
+
+    // Timeline
+    const tlBox = document.createElement('div');
+    tlBox.style.cssText = 'background:#0f3460;border-radius:10px;padding:.8rem .8rem .5rem';
+    const tlHdr = document.createElement('div');
+    tlHdr.style.cssText = 'font-size:.68rem;color:#a0c4ff;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.45rem;font-weight:600';
+    tlHdr.textContent = 'Timeline — licencje rok po roku';
+    tlBox.appendChild(tlHdr);
+    if (years.length) {
+      tlBox.appendChild(cmpBuildTimelineSVG(years, data.byYear));
+    } else {
+      const ne = document.createElement('div');
+      ne.style.cssText = 'color:#555;font-size:.8rem;padding:.8rem 0';
+      ne.textContent = 'Brak danych o datach';
+      tlBox.appendChild(ne);
+    }
+
+    chartsRow.append(donutBox, tlBox);
+    content.appendChild(chartsRow);
+
+    // ── Details table ──
+    const tblBox = document.createElement('div');
+    tblBox.style.cssText = 'background:#0f3460;border-radius:10px;padding:.8rem;margin-bottom:.85rem';
+    const tblHdr = document.createElement('div');
+    tblHdr.style.cssText = 'font-size:.68rem;color:#a0c4ff;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;font-weight:600';
+    tblHdr.textContent = 'Szczegóły';
+    tblBox.appendChild(tblHdr);
+
+    const tbl = document.createElement('table');
+    tbl.style.cssText = 'width:100%;border-collapse:collapse;font-size:.82rem';
+    tbl.innerHTML = `<thead><tr>${['Licencja','Zdjęć','Udział',''].map(h =>
+      `<th style="text-align:left;padding:.3rem .55rem;color:#a0c4ff;font-size:.68rem;text-transform:uppercase;` +
+      `letter-spacing:.04em;border-bottom:1px solid #1a4a8a">${h}</th>`
+    ).join('')}</tr></thead>`;
+    const tbody = document.createElement('tbody');
+    for (const [id, cnt] of sortedLics) {
+      const pct   = ((cnt/data.total)*100).toFixed(1);
+      const color = cmpLicColor(id);
+      const name  = cmpLicName(id);
+      const short = cmpSN(id);
+      const tr = document.createElement('tr');
+      tr.style.cssText = 'cursor:default;transition:background .1s';
+      tr.innerHTML =
+        `<td style="padding:.35rem .55rem">` +
+          `<span style="background:${color}22;color:${color};border:1px solid ${color}44;` +
+          `border-radius:100px;padding:.1rem .4rem;font-size:.68rem;font-weight:700">${short}</span>` +
+          `<span style="color:#bbb;margin-left:.45rem;font-size:.8rem">${name}</span>` +
+        `</td>` +
+        `<td style="padding:.35rem .55rem;font-weight:700;color:#ffd93d;white-space:nowrap">${cnt.toLocaleString()}</td>` +
+        `<td style="padding:.35rem .55rem;color:#aaa;white-space:nowrap">${pct}%</td>` +
+        `<td style="padding:.35rem .55rem;width:40%">` +
+          `<div style="background:#0a1525;border-radius:100px;height:5px;overflow:hidden">` +
+            `<div style="height:100%;width:${pct}%;background:${color};border-radius:100px"></div>` +
+          `</div></td>`;
+      tr.addEventListener('mouseenter', () => tr.style.background = 'rgba(255,255,255,.03)');
+      tr.addEventListener('mouseleave', () => tr.style.background = '');
+      tbody.appendChild(tr);
+    }
+    tbl.appendChild(tbody);
+    tblBox.appendChild(tbl);
+    content.appendChild(tblBox);
+
+    // ── Export CSV ──
+    const expBtn = document.createElement('button');
+    expBtn.style.cssText = 'background:#1a4a8a;color:#a0c4ff;border:none;border-radius:7px;' +
+      'padding:.4rem .9rem;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .15s';
+    expBtn.textContent = '↓ Eksport CSV';
+    expBtn.addEventListener('mouseenter', () => expBtn.style.background = '#1e5aaa');
+    expBtn.addEventListener('mouseleave', () => expBtn.style.background = '#1a4a8a');
+    expBtn.addEventListener('click', () => {
+      const BOM='\ufeff', SEP=';';
+      const rows = [['Rok', ...licIds.map(id => cmpSN(id)), 'Łącznie']];
+      for (const yr of years) {
+        const row = [yr, ...licIds.map(id => data.byYear[yr]?.[id]||0)];
+        row.push(row.slice(1).reduce((a,b)=>a+b,0));
+        rows.push(row);
+      }
+      rows.push(['SUMA', ...licIds.map(id => data.byLic[id]||0), data.total]);
+      const csv = BOM + rows.map(r => r.join(SEP)).join('\r\n');
+      const fname = `${profile.username}_licencje${filterFrom?'_'+filterFrom:''}${filterTo?'_'+filterTo:''}.csv`;
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download=fname;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+    content.appendChild(expBtn);
+  }
+
+  rebuildContent();
+
+  // ── History section ──
+  const history = profile.history || [];
+  if (history.length) {
+    const hdr = document.createElement('div');
+    hdr.style.cssText = 'font-size:.7rem;color:#a0c4ff;text-transform:uppercase;letter-spacing:.05em;' +
+      'margin-top:1.2rem;margin-bottom:.5rem;font-weight:600';
+    hdr.textContent = 'Historia skanowania';
+    panel.appendChild(hdr);
+
+    const histBox = document.createElement('div');
+    histBox.style.cssText = 'background:#0f3460;border-radius:10px;padding:.75rem 1rem';
+    [...history].reverse().forEach(entry => {
+      const d = new Date(entry.date);
+      const dateStr = d.toLocaleDateString('pl-PL',{day:'2-digit',month:'2-digit',year:'numeric'}) +
+        ' ' + d.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:baseline;gap:.5rem;padding:.28rem 0;' +
+        'border-bottom:1px solid rgba(15,52,96,.6);font-size:.8rem';
+      row.innerHTML =
+        `<span style="color:#555;flex-shrink:0;font-size:.72rem">${dateStr}</span>` +
+        `<span style="color:#666;font-size:.72rem;flex-shrink:0">${entry.type==='full'?'pełne':'delta'}</span>` +
+        (entry.added   ? `<span style="color:#2ecc71">+${entry.added} dodanych</span>` : '') +
+        (entry.removed ? `<span style="color:#e74c3c">−${entry.removed} usuniętych</span>` : '') +
+        (!entry.added && !entry.removed ? `<span style="color:#555">brak zmian</span>` : '') +
+        `<span style="color:#555;margin-left:auto;font-size:.72rem">${(entry.total||0).toLocaleString()} łącznie</span>`;
+      histBox.appendChild(row);
+    });
+    panel.appendChild(histBox);
+  }
+
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+}
+
+// ── Photo date helpers (for filtering) ──
+function cmpPhotoDateStr(photo) {
+  if (photo.datetaken && photo.datetaken.length >= 10)
+    return photo.datetaken.slice(0, 10);
+  if (photo.dateupload)
+    return new Date(+photo.dateupload * 1000).toISOString().slice(0, 10);
+  return null;
+}
+function cmpFilterPhotos(photos, fromStr, toStr) {
+  if (!fromStr && !toStr) return photos;
+  return photos.filter(p => {
+    const ds = cmpPhotoDateStr(p);
+    if (!ds) return false;
+    if (fromStr && ds < fromStr) return false;
+    if (toStr   && ds > toStr)   return false;
+    return true;
+  });
+}
+
+// ── Group section: timeline + per-profile bars ──
+// baseAnalyses     = full (unfiltered) data — used for timeline SVG
+// filteredAnalyses = date-filtered data — used for bars and bottom legend
+// filterFrom / filterTo = ISO date strings like "2024-04-01" (or "")
+// onRangeSelect(from, to) — called when user clicks a year in the timeline
+function cmpBuildGroupSection(baseAnalyses, filteredAnalyses, filterFrom, filterTo, onRangeSelect) {
+  // Aggregate byYear from BASE analyses — for timeline
+  const combinedByYear = {};
+  for (const { data } of baseAnalyses) {
+    for (const [yr, licMap] of Object.entries(data.byYear || {})) {
+      if (!combinedByYear[yr]) combinedByYear[yr] = {};
+      for (const [k, v] of Object.entries(licMap))
+        combinedByYear[yr][k] = (combinedByYear[yr][k] || 0) + v;
+    }
+  }
+  const allYears = Object.keys(combinedByYear).sort();
+
+  // Aggregate from FILTERED analyses — for bars & legend
+  const combinedByLic = {};
+  for (const { data } of filteredAnalyses)
+    for (const [k, v] of Object.entries(data.byLic))
+      combinedByLic[k] = (combinedByLic[k] || 0) + v;
+  const combinedTotal = filteredAnalyses.reduce((s, a) => s + a.data.total, 0);
+
+  const section = document.createElement('div');
+  section.style.cssText = 'margin-bottom:1.25rem';
+
+  const hdr = document.createElement('div');
+  hdr.style.cssText = 'font-size:.7rem;color:#a0c4ff;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem;font-weight:600';
+  hdr.textContent = 'Porównanie grupowe — rozkład licencji przez lata';
+  section.appendChild(hdr);
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'background:#0f3460;border-radius:10px;padding:1rem 1rem .8rem;overflow:hidden';
+  section.appendChild(wrap);
+
+  const tlHdr = document.createElement('div');
+  tlHdr.style.cssText = 'font-size:.68rem;color:#666;margin-bottom:.5rem';
+  tlHdr.textContent = 'Kliknij rok aby filtrować ↓';
+  wrap.appendChild(tlHdr);
+
+  const tlWrap = document.createElement('div');
+  tlWrap.style.cssText = 'width:100%;margin-bottom:.9rem';
+
+  if (!allYears.length) {
+    tlWrap.innerHTML = '<div style="color:#555;font-size:.8rem;padding:.5rem 0">Brak danych o datach</div>';
+  } else {
+    tlWrap.appendChild(cmpBuildTimelineSVG(allYears, combinedByYear, {
+      H: 120, filterFrom, filterTo,
+      onYearClick: onRangeSelect,
+    }));
+  }
+
+  wrap.appendChild(tlWrap);
+
+  // ── Per-profile stacked bars (from filtered data) ──
+  const barsWrap = document.createElement('div');
+  barsWrap.style.cssText = 'display:flex;flex-direction:column;gap:.45rem';
+
+  const barRows = filteredAnalyses.map(({ profile, data }) => ({
+    profile, licMap: data.byLic, total: data.total
+  }));
+  const maxTotal = Math.max(...barRows.map(r => r.total), 1);
+
+  for (const { profile, licMap, total } of barRows) {
+    const rowWrap = document.createElement('div');
+    rowWrap.style.cssText = 'display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:.6rem';
+
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:.75rem;color:#a0c4ff;font-weight:600;white-space:nowrap;' +
+      'overflow:hidden;text-overflow:ellipsis;cursor:default';
+    lbl.textContent = cmpDN(profile);
+    lbl.title = cmpDN(profile) !== profile.username
+      ? `${cmpDN(profile)} (Flickr: ${profile.username})` : profile.username;
+
+    const track = document.createElement('div');
+    track.style.cssText = 'position:relative;height:22px;background:#0a1525;border-radius:4px;overflow:hidden';
+
+    if (!total) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;' +
+        'padding-left:.55rem;font-size:.7rem;color:#333';
+      empty.textContent = (filterFrom || filterTo) ? 'brak danych w wybranym zakresie' : 'brak danych';
+      track.appendChild(empty);
+    } else {
+      const fill = document.createElement('div');
+      fill.style.cssText = `width:${(total/maxTotal*100).toFixed(3)}%;height:100%;display:flex;overflow:hidden`;
+
+      const sortedLics = Object.entries(licMap).sort((a,b) => b[1]-a[1]);
+      for (const [licId, cnt] of sortedLics) {
+        const frac  = cnt / total;
+        const color = cmpLicColor(licId);
+        const name  = cmpLicName(licId);
+        const pct   = (frac * 100).toFixed(1);
+        const seg   = document.createElement('div');
+        seg.style.cssText = `width:${(frac*100).toFixed(3)}%;background:${color};height:100%;` +
+          `cursor:default;flex-shrink:0;transition:opacity .15s`;
+        cmpAddTip(seg,
+          `<strong style="color:${color}">${name}</strong><br>` +
+          `<span style="color:#888">${cmpDN(profile)}</span><br>` +
+          `<strong style="font-size:1rem">${cnt.toLocaleString()}</strong> zdjęć · ${pct}%`,
+          { onEnter: () => seg.style.opacity = '.72', onLeave: () => seg.style.opacity = '1' }
+        );
+        fill.appendChild(seg);
+      }
+      track.appendChild(fill);
+    }
+
+    const cntLbl = document.createElement('div');
+    cntLbl.style.cssText = 'font-size:.72rem;color:#555;white-space:nowrap;text-align:right';
+    cntLbl.textContent = total ? total.toLocaleString() : '—';
+
+    rowWrap.append(lbl, track, cntLbl);
+    barsWrap.appendChild(rowWrap);
+  }
+  wrap.appendChild(barsWrap);
+
+  // ── Legend ──
+  const legWrap = document.createElement('div');
+  legWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:.3rem .8rem;margin-top:.75rem;padding-top:.65rem;border-top:1px solid #1a3060';
+  const sortedCombined = Object.entries(combinedByLic).sort((a,b) => b[1]-a[1]);
+  for (const [licId, cnt] of sortedCombined) {
+    const color = cmpLicColor(licId);
+    const name  = cmpLicName(licId);
+    const short = cmpSN(licId);
+    const pct   = combinedTotal ? ((cnt/combinedTotal)*100).toFixed(1) : '0.0';
+    const item  = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:.3rem;font-size:.72rem;cursor:default;' +
+      'border-radius:4px;padding:.1rem .3rem;margin:0 -.3rem;transition:background .1s';
+    item.innerHTML =
+      `<span style="width:9px;height:9px;border-radius:2px;background:${color};flex-shrink:0"></span>` +
+      `<span style="color:#aaa;font-weight:500">${short}</span>` +
+      `<span style="color:#ccc;font-weight:600">${pct}%</span>`;
+    cmpAddTip(item,
+      `<strong style="color:${color}">${name}</strong><br>` +
+      `Łącznie: <strong style="font-size:1rem">${cnt.toLocaleString()}</strong> zdjęć · ${pct}%`,
+      { onEnter: () => item.style.background = 'rgba(255,255,255,.07)', onLeave: () => item.style.background = '' }
+    );
+    legWrap.appendChild(item);
+  }
+  wrap.appendChild(legWrap);
+
+  return section;
+}
+
+// ── Main compare action ──
+function cmpCompare() {
+  const checks = [...document.querySelectorAll('#cmp-profile-list input[type=checkbox]:checked')];
+  const selected = checks.map(c => cmpProfiles[parseInt(c.value)]);
+  if (selected.length < 2) return;
+
+  const WEEK_MS = 7 * 24 * 3600 * 1000;
+  const dates = selected.map(p => p.fetchedAt ? new Date(p.fetchedAt) : null).filter(Boolean);
+  const newest = dates.length ? new Date(Math.max(...dates)) : null;
+  const oldest = dates.length ? new Date(Math.min(...dates)) : null;
+  const staleDiff = newest && oldest && (newest - oldest) > WEEK_MS;
+
+  cmpRenderResults(selected, staleDiff, newest, oldest);
+}
+
+// ── Render results ──
+function cmpRenderResults(selected, staleDiff, newest, oldest) {
+  const results = document.getElementById('cmp-results');
+  results.innerHTML = '';
+
+  // ── Warning banner ──
+  if (staleDiff) {
+    const warn = document.createElement('div');
+    warn.className = 'cmp-warn';
+    const diff = Math.round((newest - oldest) / 86400000);
+    warn.innerHTML = `⚠️ Dane profili różnią się datą aktualizacji o <strong>${diff} dni</strong>. Porównanie może być niedokładne.`;
+    results.appendChild(warn);
+  }
+
+  // ── Base (unfiltered) analyses — used for timeline SVG ──
+  const baseAnalyses = selected.map(p => ({ profile: p, data: cmpAnalyzePrecomputed(p) }));
+
+  // Collect all years present in any profile for quick-select buttons
+  const allYearsSet = new Set();
+  for (const { data } of baseAnalyses) Object.keys(data.byYear || {}).forEach(y => allYearsSet.add(y));
+  const allYears = [...allYearsSet].sort();
+
+  // ── Filter state (ISO date strings, e.g. "2024-04-01") ──
+  let filterFrom = '', filterTo = '';
+
+  // ── Date filter bar ──
+  const filterBar = document.createElement('div');
+  filterBar.style.cssText = 'display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .65rem;' +
+    'margin-bottom:1rem;background:#0f3460;border-radius:8px;padding:.6rem .85rem;';
+
+  const filterLbl = document.createElement('span');
+  filterLbl.style.cssText = 'font-size:.72rem;color:#a0c4ff;font-weight:600;white-space:nowrap;flex-shrink:0';
+  filterLbl.textContent = 'Zakres dat:';
+
+  const inputStyle = 'background:#0a1525;border:1px solid #1a4a8a;border-radius:5px;color:#ccc;' +
+    'font-size:.72rem;padding:.2rem .45rem;cursor:pointer;outline:none;';
+
+  const fromInput = document.createElement('input');
+  fromInput.type = 'date'; fromInput.style.cssText = inputStyle; fromInput.title = 'Od daty';
+
+  const dashSpan = document.createElement('span');
+  dashSpan.textContent = '–'; dashSpan.style.cssText = 'color:#444;font-size:.8rem;flex-shrink:0';
+
+  const toInput = document.createElement('input');
+  toInput.type = 'date'; toInput.style.cssText = inputStyle; toInput.title = 'Do daty';
+
+  const yearBtns = document.createElement('div');
+  yearBtns.style.cssText = 'display:flex;flex-wrap:wrap;gap:.25rem;align-items:center';
+  for (const yr of allYears) {
+    const btn = document.createElement('button');
+    btn.dataset.year = yr;
+    btn.textContent = yr;
+    btn.style.cssText = 'font-size:.68rem;padding:.15rem .45rem;border-radius:4px;border:1px solid #1a4a8a;' +
+      'background:#0a1525;color:#555;cursor:pointer;transition:background .1s,color .1s;white-space:nowrap';
+    btn.addEventListener('mouseenter', () => { if (btn.style.background !== 'rgb(26, 74, 138)') btn.style.color = '#a0c4ff'; });
+    btn.addEventListener('mouseleave', () => { if (btn.style.background !== 'rgb(26, 74, 138)') btn.style.color = '#555'; });
+    btn.addEventListener('click', () => {
+      const yrFrom = yr + '-01-01', yrTo = yr + '-12-31';
+      if (filterFrom === yrFrom && filterTo === yrTo) { filterFrom = ''; filterTo = ''; }
+      else { filterFrom = yrFrom; filterTo = yrTo; }
+      showEmpty = false; updateFilterUI(); rebuildVisuals();
+    });
+    yearBtns.appendChild(btn);
+  }
+
+  const resetBtn = document.createElement('button');
+  resetBtn.textContent = '✕ reset';
+  resetBtn.style.cssText = 'font-size:.7rem;color:#555;background:none;border:none;cursor:pointer;' +
+    'padding:0 .2rem;text-decoration:underline;transition:color .1s;white-space:nowrap;flex-shrink:0';
+  resetBtn.addEventListener('mouseenter', () => resetBtn.style.color = '#a0c4ff');
+  resetBtn.addEventListener('mouseleave', () => resetBtn.style.color = '#555');
+  resetBtn.addEventListener('click', () => { filterFrom = ''; filterTo = ''; showEmpty = false; updateFilterUI(); rebuildVisuals(); });
+
+  fromInput.addEventListener('change', () => { filterFrom = fromInput.value || ''; showEmpty = false; updateFilterUI(); rebuildVisuals(); });
+  toInput.addEventListener('change',   () => { filterTo   = toInput.value   || ''; showEmpty = false; updateFilterUI(); rebuildVisuals(); });
+
+  filterBar.append(filterLbl, fromInput, dashSpan, toInput, yearBtns, resetBtn);
+  results.appendChild(filterBar);
+
+  function updateFilterUI() {
+    fromInput.value = filterFrom;
+    toInput.value   = filterTo;
+    resetBtn.style.display = (filterFrom || filterTo) ? '' : 'none';
+    yearBtns.querySelectorAll('button[data-year]').forEach(btn => {
+      const yr = btn.dataset.year;
+      const isActive = filterFrom === yr + '-01-01' && filterTo === yr + '-12-31';
+      btn.style.background = isActive ? '#1a4a8a' : '#0a1525';
+      btn.style.color      = isActive ? '#a0c4ff' : '#555';
+    });
+  }
+  updateFilterUI();
+
+  // ── Placeholder areas (rebuilt by rebuildVisuals) ──
+  const donutsArea  = document.createElement('div');
+  const groupArea   = document.createElement('div');
+  const tableArea   = document.createElement('div');
+  const hiddenBanner = document.createElement('div');
+  results.append(hiddenBanner, donutsArea, groupArea, tableArea);
+
+  // State: whether to show profiles with no data for the current filter
+  let showEmpty = false;
+
+  function rebuildVisuals() {
+    // Filter each profile's photos by date range
+    const analyses = baseAnalyses.map(({ profile }) => {
+      return { profile, data: cmpFilterByYear(profile, filterFrom, filterTo) };
+    });
+
+    // Split into visible (has data) and empty (no data) — only hide when a filter is active
+    const hasFilter = !!(filterFrom || filterTo);
+    const emptyAnalyses   = hasFilter ? analyses.filter(a => a.data.total === 0) : [];
+    const visibleAnalyses = hasFilter ? analyses.filter(a => a.data.total  > 0) : analyses;
+
+    // Profiles actually shown (respects the toggle)
+    const shownAnalyses = showEmpty ? analyses : visibleAnalyses;
+
+    // ── Hidden banner ──
+    hiddenBanner.innerHTML = '';
+    if (hasFilter && emptyAnalyses.length) {
+      const names = emptyAnalyses.map(a => cmpDN(a.profile)).join(', ');
+      hiddenBanner.style.cssText = 'display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;' +
+        'background:rgba(160,196,255,.06);border:1px solid rgba(160,196,255,.18);border-radius:8px;' +
+        'padding:.55rem .85rem;margin-bottom:.9rem;font-size:.8rem;color:#888';
+
+      const msg = document.createElement('span');
+      msg.style.flex = '1';
+      msg.innerHTML = showEmpty
+        ? `<span style="color:#a0c4ff">${emptyAnalyses.length}</span> profil${emptyAnalyses.length === 1 ? '' : (emptyAnalyses.length < 5 ? 'e' : 'ów')} bez danych za ten okres: <span style="color:#666">${names}</span>`
+        : `<span style="color:#a0c4ff">${emptyAnalyses.length}</span> profil${emptyAnalyses.length === 1 ? '' : (emptyAnalyses.length < 5 ? 'e' : 'ów')} ukryt${emptyAnalyses.length === 1 ? 'y' : 'ych'} (brak danych za ten okres)`;
+
+      const toggleBtn = document.createElement('button');
+      toggleBtn.style.cssText = 'background:#1a4a8a;color:#a0c4ff;border:none;border-radius:6px;' +
+        'padding:.25rem .65rem;font-size:.76rem;font-weight:600;cursor:pointer;white-space:nowrap;' +
+        'transition:background .15s;flex-shrink:0';
+      toggleBtn.textContent = showEmpty ? '↑ Ukryj' : '↓ Pokaż';
+      toggleBtn.addEventListener('mouseenter', () => toggleBtn.style.background = '#1e5aaa');
+      toggleBtn.addEventListener('mouseleave', () => toggleBtn.style.background = '#1a4a8a');
+      toggleBtn.addEventListener('click', () => { showEmpty = !showEmpty; rebuildVisuals(); });
+
+      hiddenBanner.append(msg, toggleBtn);
+    }
+
+    const allLicIds = [...new Set(shownAnalyses.flatMap(a => Object.keys(a.data.byLic)))]
+      .sort((a,b) => parseInt(a) - parseInt(b));
+    const combinedByLic = {};
+    for (const { data } of shownAnalyses)
+      for (const [k, v] of Object.entries(data.byLic))
+        combinedByLic[k] = (combinedByLic[k] || 0) + v;
+    const combinedTotal = shownAnalyses.reduce((s, a) => s + a.data.total, 0);
+
+    // ── Donuts ──
+    donutsArea.innerHTML = '';
+    const donutsRow = document.createElement('div');
+    donutsRow.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.75rem;margin-bottom:1.25rem';
+
+    for (const { profile, data } of shownAnalyses) {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#0f3460;border-radius:10px;padding:.85rem 1rem;min-width:0;overflow:hidden';
+
+      // Full (unfiltered) data for this profile — used by the stats modal
+      const fullData = baseAnalyses.find(a => a.profile === profile)?.data || data;
+
+      const nameEl = document.createElement('div');
+      nameEl.style.cssText = 'font-weight:700;font-size:.88rem;color:#a0c4ff;margin-bottom:.55rem;white-space:nowrap;' +
+        'overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:color .12s';
+      nameEl.textContent = cmpDN(profile);
+      nameEl.title = 'Kliknij aby zobaczyć pełne statystyki' +
+        (cmpDN(profile) !== profile.username ? ` · Flickr: ${profile.username}` : '');
+      nameEl.addEventListener('mouseenter', () => nameEl.style.color = '#d0e8ff');
+      nameEl.addEventListener('mouseleave', () => nameEl.style.color = '#a0c4ff');
+      nameEl.addEventListener('click', () => cmpShowProfileStats(profile));
+      card.appendChild(nameEl);
+
+      const donutWrap = document.createElement('div');
+      donutWrap.style.cssText = 'display:flex;align-items:center;gap:.65rem;min-width:0';
+      const donutSvg = cmpBuildDonut(data.byLic, data.total, 78);
+      donutSvg.style.flexShrink = '0';
+      donutWrap.appendChild(donutSvg);
+
+      const leg = document.createElement('div');
+      leg.style.cssText = 'flex:1;min-width:0;overflow:hidden';
+      leg.appendChild(cmpBuildLegend(data.byLic, data.total));
+      donutWrap.appendChild(leg);
+      card.appendChild(donutWrap);
+
+      const dateEl = document.createElement('div');
+      dateEl.style.cssText = 'font-size:.74rem;color:#555;margin-top:.5rem';
+      dateEl.textContent = cmpFetchedAtLabel(profile);
+      card.appendChild(dateEl);
+      donutsRow.appendChild(card);
+    }
+    donutsArea.appendChild(donutsRow);
+
+    // ── Group section (timeline uses baseAnalyses, bars use shown analyses) ──
+    groupArea.innerHTML = '';
+    groupArea.appendChild(cmpBuildGroupSection(
+      baseAnalyses, shownAnalyses, filterFrom, filterTo,
+      (from, to) => { filterFrom = from; filterTo = to; updateFilterUI(); rebuildVisuals(); }
+    ));
+
+    // ── Comparison table ──
+    tableArea.innerHTML = '';
+    const tableWrap = document.createElement('div');
+    tableWrap.style.cssText = 'overflow-x:auto;margin-bottom:1rem';
+
+    const table = document.createElement('table');
+    table.className = 'cmp-table';
+
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const thLic = document.createElement('th');
+    thLic.textContent = 'Licencja';
+    headRow.appendChild(thLic);
+
+    for (const { profile } of shownAnalyses) {
+      const th = document.createElement('th');
+      th.style.cssText = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;cursor:default';
+      th.textContent = cmpDN(profile);
+      th.title = cmpDN(profile) !== profile.username
+        ? `${cmpDN(profile)} (Flickr: ${profile.username})` : profile.username;
+      cmpAddTip(th,
+        `<strong>${cmpDN(profile)}</strong>` +
+        (cmpDN(profile) !== profile.username ? `<br><span style="color:#555;font-size:.72rem">Flickr: ${profile.username}</span>` : '') +
+        `<br><span style="color:#666;font-size:.75rem">${(profile.total || 0).toLocaleString()} zdjęć łącznie</span>`
+      );
+      headRow.appendChild(th);
+    }
+    const thSum = document.createElement('th');
+    thSum.textContent = 'Łącznie';
+    headRow.appendChild(thSum);
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    for (const licId of allLicIds) {
+      const tr = document.createElement('tr');
+      const color = cmpLicColor(licId);
+      const name  = cmpLicName(licId);
+
+      const tdLic = document.createElement('td');
+      tdLic.style.cssText = 'cursor:default';
+      tdLic.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:.4rem"></span>${name}`;
+      cmpAddTip(tdLic, `<strong style="color:${color}">${name}</strong>`);
+      tr.appendChild(tdLic);
+
+      let rowTotal = 0;
+      for (const { data, profile } of shownAnalyses) {
+        const cnt = data.byLic[licId] || 0;
+        const pct = data.total ? ((cnt/data.total)*100).toFixed(1) : '0.0';
+        rowTotal += cnt;
+        const td = document.createElement('td');
+        td.style.cssText = 'cursor:default';
+        td.innerHTML = `${cnt.toLocaleString()} <span style="color:#555;font-size:.75rem">(${pct}%)</span>`;
+        cmpAddTip(td,
+          `<strong style="color:${color}">${name}</strong><br>` +
+          `<span style="color:#888">${cmpDN(profile)}</span><br>` +
+          `<strong style="font-size:1rem">${cnt.toLocaleString()}</strong> zdjęć · ${pct}%`
+        );
+        tr.appendChild(td);
+      }
+      const combinedPct = combinedTotal ? ((rowTotal/combinedTotal)*100).toFixed(1) : '0.0';
+      const tdSum = document.createElement('td');
+      tdSum.style.cssText = 'font-weight:600;cursor:default';
+      tdSum.innerHTML = `${rowTotal.toLocaleString()} <span style="color:#555;font-size:.75rem">(${combinedPct}%)</span>`;
+      cmpAddTip(tdSum,
+        `<strong style="color:${color}">${name}</strong> — wszystkie profile<br>` +
+        `<strong style="font-size:1rem">${rowTotal.toLocaleString()}</strong> zdjęć · ${combinedPct}%`
+      );
+      tr.appendChild(tdSum);
+      tbody.appendChild(tr);
+    }
+
+    const totalRow = document.createElement('tr');
+    totalRow.style.cssText = 'border-top:2px solid #1a4a8a;font-weight:700';
+    const tdTotLbl = document.createElement('td');
+    tdTotLbl.style.color = '#a0c4ff';
+    tdTotLbl.textContent = 'Łącznie';
+    totalRow.appendChild(tdTotLbl);
+    for (const { data } of shownAnalyses) {
+      const td = document.createElement('td');
+      td.textContent = data.total.toLocaleString();
+      totalRow.appendChild(td);
+    }
+    const tdGrand = document.createElement('td');
+    tdGrand.textContent = combinedTotal.toLocaleString();
+    totalRow.appendChild(tdGrand);
+    tbody.appendChild(totalRow);
+
+    table.appendChild(tbody);
+    tableWrap.appendChild(table);
+    tableArea.appendChild(tableWrap);
+
+    // Store for CSV export
+    cmpLastResults = { analyses: shownAnalyses, allLicIds, combinedByLic, combinedTotal };
+    document.getElementById('cmp-export-btn').style.display = '';
+  }
+
+  rebuildVisuals();
+}
+
+// ── CSV export ──
+function cmpExportCSV() {
+  if (!cmpLastResults) return;
+  const { analyses, allLicIds } = cmpLastResults;
+
+  const BOM = '\ufeff';
+  const SEP = ';';
+  const NL = '\r\n';
+
+  const headers = ['Licencja', ...analyses.map(a => cmpDN(a.profile)), 'Łącznie'];
+  const rows = [headers.join(SEP)];
+
+  for (const licId of allLicIds) {
+    const name = cmpLicName(licId);
+    const vals = analyses.map(a => a.data.byLic[licId] || 0);
+    const total = vals.reduce((s,v)=>s+v,0);
+    rows.push([name, ...vals, total].join(SEP));
+  }
+
+  // Totals row
+  const totals = analyses.map(a => a.data.total);
+  const grandTotal = totals.reduce((s,v)=>s+v,0);
+  rows.push(['Łącznie', ...totals, grandTotal].join(SEP));
+
+  const csv = BOM + rows.join(NL);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'porownanie_licencji.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ── On page load: auto-load pre-built profiles ──
+cmpLoadProfiles();
+</script>
+</body>
+</html>
